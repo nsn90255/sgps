@@ -293,19 +293,24 @@ void *handle_client(int *arg) {
     const char ftype = parseGophermap(&uinput, &pgophermap);
 
     if (ftype) {
+	struct String targetPath = {0};
 	switch (ftype) {
 	    case '0' :
 		printf("The requested media is a file, starting TextFile Transaction");
-		struct String filePath = {0};
-		getFilePath(&path, &uinput, &filePath);
-		textFileTransaction(&response, &filePath);
+		getFilePath(&path, &uinput, &targetPath);
+		textFileTransaction(&response, &targetPath);
 		break;
 	    case '1' :
 		printf("The requested media is a directory, starting Menu Transaction\n");
-		struct String dgmap = {0};
-		getdgmapPath(&root, &uinput, &dgmap);
-		printf("The path to get is %s\n", dgmap.s);
-		menuTransaction(&response, &dgmap);
+		getdgmapPath(&root, &uinput, &targetPath);
+		printf("The path to get is %s\n", targetPath.s);
+		menuTransaction(&response, &targetPath);
+		break;
+	    case '9' :
+		printf("The requested media is a binary, sending it\n");
+		getFilePath(&path, &uinput, &targetPath);
+		textFileTransaction(&response, &targetPath);
+		dotTerm = false;
 		break;
 	}
     } else {
