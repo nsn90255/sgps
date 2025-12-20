@@ -18,6 +18,16 @@ struct String {
     size_t len;
 };
 
+struct Flags {
+    bool odd;
+    bool r;
+    struct String root;
+    bool d;
+    struct String domain;
+    bool p;
+    struct String port;
+};
+
 void str_pnd(struct String *str, char *toAdd) {
     size_t i = 0;
     while (toAdd[i]) {
@@ -341,10 +351,56 @@ terminate_con:
 void checkGopherMaps(void) {
     // TODO check that each directory in the server has a gophermap
 }
-int main(void) {
+
+void usage(void) {
+    printf("Usage: sgps -d /directory [OPTIONS] ...\n");
+}
+
+bool checkFlags(struct Flags *flags, int argc, char *argv[]){
+    // each flag need an argument
+    if (argc % 2 != 0)
+	flags->odd = true;
+    // get flags and arguments
+    for (int i = 1; i < argc; i += 2) {
+	switch (argv[i][1]) {
+	    case 'r' :
+		flags->r = true;
+		str_pnd(&flags->root, argv[i + 1]);
+		break;
+	    case 'd' :
+		flags->d = true;
+		str_pnd(&flags->domain, argv[i + 1]);
+		break;
+	    case 'p' :
+		flags->p = true;
+		str_pnd(&flags->port, argv[i + 1]);
+		break;
+	    default :
+		return 0;
+	}
+    }
+    // the root is mandatory
+    if (flags->r == 0)
+	printf("You must specify a root for the server to serve\n");
+
+    return flags->odd && flags->r;
+}
+
+int main(int argc, char *argv[]) {
     
+    struct Flags flags = {0};
+
+    if (!checkFlags(&flags, argc, argv)) {
+	usage();
+	exit(1);
+    }
+
+    printf("The root is : %s\n", flags.root.s);
+    printf("The domain is : %s\n", flags.domain.s);
+    printf("The port is : %s\n", flags.port.s);
+
     /* check that each dir has a gophermap */
-    checkGopherMaps();
+    // checkGopherMaps();
     
     const int port = 7000;
     int sock;
