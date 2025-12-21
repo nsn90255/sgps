@@ -19,7 +19,6 @@ struct String {
 };
 
 struct Flags {
-    bool odd;
     bool r;
     struct String root;
     bool d;
@@ -357,11 +356,16 @@ void usage(void) {
 }
 
 bool checkFlags(struct Flags *flags, int argc, char *argv[]){
+    bool odd = false;
     // each flag need an argument
     if (argc % 2 != 0)
-	flags->odd = true;
+	odd = true;
     // get flags and arguments
     for (int i = 1; i < argc; i += 2) {
+	// if the flags are not two chars return immediately
+	if ((sizeof(argv[i]) - 1) != 2)
+	    return false;
+	// set options for flags
 	switch (argv[i][1]) {
 	    case 'r' :
 		flags->r = true;
@@ -376,14 +380,17 @@ bool checkFlags(struct Flags *flags, int argc, char *argv[]){
 		str_pnd(&flags->port, argv[i + 1]);
 		break;
 	    default :
-		return 0;
+		return false;
 	}
     }
     // the root is mandatory
-    if (flags->r == 0)
-	printf("You must specify a root for the server to serve\n");
+    if (!flags->r)
+	printf("You must specify a root for the server to serve from.\n");
+    // the domain is mandatory
+    if (!flags->d)
+	printf("You must specify a domain for the server.\n");
 
-    return flags->odd && flags->r;
+    return odd && flags->r && flags->d;
 }
 
 int main(int argc, char *argv[]) {
@@ -395,14 +402,24 @@ int main(int argc, char *argv[]) {
 	exit(1);
     }
 
-    printf("The root is : %s\n", flags.root.s);
-    printf("The domain is : %s\n", flags.domain.s);
-    printf("The port is : %s\n", flags.port.s);
-
     /* check that each dir has a gophermap */
     // checkGopherMaps();
     
-    const int port = 7000;
+    int port = 70;
+    
+    if (flags.p) {
+	if (sscanf(flags.port.s, "%i", &port) != 1) {
+	    printf("The port is wrong, dingus\n");
+	    usage();
+	    exit(1);
+	}
+    }
+
+    printf("The root is : %s\n", flags.root.s);
+    printf("The domain is : %s\n", flags.domain.s);
+    printf("The port is : %i\n", port);
+	
+
     int sock;
 
     /* create socket ipv4 tcp socket*/
