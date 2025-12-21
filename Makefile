@@ -1,6 +1,6 @@
 .PHONY: all clean debug
 CC = gcc
-CFLAGS = -Wall
+CFLAGS = -Wall -pedantic
 LDFLAGS =
 DEBUGFLAGS = -O0 -g -Werror
 SRC = src/sgps.c
