@@ -352,7 +352,11 @@ void checkGopherMaps(void) {
 }
 
 void usage(void) {
-    printf("Usage: sgps -d /directory [OPTIONS] ...\n");
+    printf("Usage: sgps [OPTIONS] \n");
+    printf("-r [...] : Root of the server\n");
+    printf("-d [...] : Domain of the server\n");
+    printf("-p [...] : Port to serve from\n");
+    printf("Ex : sgps -r /srv -d example.com -p 7070\n");
 }
 
 bool checkFlags(struct Flags *flags, int argc, char *argv[]){
@@ -363,8 +367,10 @@ bool checkFlags(struct Flags *flags, int argc, char *argv[]){
     // get flags and arguments
     for (int i = 1; i < argc; i += 2) {
 	// if the flags are not two chars return immediately
-	if ((sizeof(argv[i]) - 1) != 2)
+	if (strlen(argv[i]) != 2) {
+	    printf("The flags must be like this -r\n");
 	    return false;
+	}
 	// set options for flags
 	switch (argv[i][1]) {
 	    case 'r' :
@@ -409,10 +415,16 @@ int main(int argc, char *argv[]) {
     
     if (flags.p) {
 	if (sscanf(flags.port.s, "%i", &port) != 1) {
-	    printf("The port is wrong, dingus\n");
+	    printf("The port is wrong, dingus.\n");
 	    usage();
 	    exit(1);
 	}
+    }
+
+    if (opendir(flags.root.s) == NULL) {
+	printf("The root for the server is not valid.\n");
+	usage();
+	exit(1);
     }
 
     printf("The root is : %s\n", flags.root.s);
