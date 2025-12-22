@@ -368,7 +368,7 @@ bool checkFlags(struct Flags *flags, int argc, char *argv[]){
     for (int i = 1; i < argc; i += 2) {
 	// if the flags are not two chars return immediately
 	if (strlen(argv[i]) != 2) {
-	    printf("The flags must be like this -r\n");
+	    printf("The flags must be like this : -r\n");
 	    return false;
 	}
 	// set options for flags
@@ -403,6 +403,7 @@ int main(int argc, char *argv[]) {
     
     struct Flags flags = {0};
 
+    /* exit imediately if the flags are flagrantly wrong */
     if (!checkFlags(&flags, argc, argv)) {
 	usage();
 	exit(1);
@@ -411,27 +412,34 @@ int main(int argc, char *argv[]) {
     /* check that each dir has a gophermap */
     // checkGopherMaps();
     
+    /* default port as per the spec */
     int port = 70;
     
+    /* if the port is defined, check that it is correct */
     if (flags.p) {
-	if (sscanf(flags.port.s, "%i", &port) != 1) {
+	/* if it's not, exit */
+	if ((sscanf(flags.port.s, "%i", &port) != 1) || !(port >= 0 && port <= 65535)) {
 	    printf("The port is wrong, dingus.\n");
 	    usage();
 	    exit(1);
 	}
+    /* if it is not defined, use the default one */
+    } else {
+	printf("Port not defined, using port 70\n");
+	str_pnd(&flags.port, "70");
     }
 
+    /* check that the root of the server exists on the filesystem */
     if (opendir(flags.root.s) == NULL) {
 	printf("The root for the server is not valid.\n");
 	usage();
 	exit(1);
+    } else {
+	printf("Serving from : %s\n", flags.root.s);
     }
 
-    printf("The root is : %s\n", flags.root.s);
     printf("The domain is : %s\n", flags.domain.s);
-    printf("The port is : %i\n", port);
-	
-
+    
     int sock;
 
     /* create socket ipv4 tcp socket*/
