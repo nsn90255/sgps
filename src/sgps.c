@@ -305,9 +305,8 @@ void *handle_client(int *arg) {
 	struct String targetPath = {0};
 	switch (ftype) {
 	    case '0' :
-	    case '4' :
 	    case '6' :
-		printf("The requested media is a plain, uuencoded, or BinHexed file, starting TextFile Transaction");
+		printf("The requested media is a plain, or uuencoded, starting TextFile Transaction");
 		getFilePath(&path, &uinput, &targetPath);
 		textFileTransaction(&response, &targetPath);
 		break;
@@ -317,6 +316,7 @@ void *handle_client(int *arg) {
 		printf("The path to get is %s\n", targetPath.s);
 		menuTransaction(&response, &targetPath);
 		break;
+	    case '4' :
 	    case '5' :
 	    case '9' :
 		printf("The requested media is a binary file or archive, sending it\n");
