@@ -306,7 +306,8 @@ void *handle_client(int *arg) {
 	switch (ftype) {
 	    case '0' :
 	    case '4' :
-		printf("The requested media is a plain or BinHexed file, starting TextFile Transaction");
+	    case '6' :
+		printf("The requested media is a plain, uuencoded, or BinHexed file, starting TextFile Transaction");
 		getFilePath(&path, &uinput, &targetPath);
 		textFileTransaction(&response, &targetPath);
 		break;
