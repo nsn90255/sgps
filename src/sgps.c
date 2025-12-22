@@ -190,7 +190,7 @@ void menuTransaction(struct String *response, struct String *dgmap) {
 	fIntoStr(response, map);
     } else {
 	printf("File %s failed to open\n", dgmap->s);
-	str_pnd(response, "Menu transaction failed\r\n");
+	str_pnd(response, "3Menu transaction failed\r\n");
     }
 }
 
@@ -259,7 +259,7 @@ void *handle_client(int *arg) {
 
     if (dir == NULL) {
 	printf("The resquested media was on a directory that wasn't found\n");
-	str_pnd(&response, "The resquested media was not found\r\n");
+	str_pnd(&response, "3The resquested media was not found\r\n");
 	goto terminate_con;
     } 
 
@@ -305,7 +305,8 @@ void *handle_client(int *arg) {
 	struct String targetPath = {0};
 	switch (ftype) {
 	    case '0' :
-		printf("The requested media is a file, starting TextFile Transaction");
+	    case '4' :
+		printf("The requested media is a plain or BinHexed file, starting TextFile Transaction");
 		getFilePath(&path, &uinput, &targetPath);
 		textFileTransaction(&response, &targetPath);
 		break;
@@ -321,16 +322,16 @@ void *handle_client(int *arg) {
 		textFileTransaction(&response, &targetPath);
 		dotTerm = false;
 		break;
+	    default :
+		printf("The requested media wasn't supported\n");
+		str_pnd(&response, "3Error, the requested media wasn't supported\r\n");
+		break;
 	}
     } else {
-	char *e404 = "The requested media was not found\r\n";
+	char *e404 = "3The requested media was not found\r\n";
 	str_pnd(&response, e404);
     }
 
-    // if file not found in gophermap, send error
-    // get file type
-    // send file accordingly
-    
 terminate_con:
     //printf("Before the dot, the string constains %s\n", response.s);
     /* append terminator */
