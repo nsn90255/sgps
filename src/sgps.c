@@ -316,8 +316,9 @@ void *handle_client(int *arg) {
 		printf("The path to get is %s\n", targetPath.s);
 		menuTransaction(&response, &targetPath);
 		break;
+	    case '5' :
 	    case '9' :
-		printf("The requested media is a binary, sending it\n");
+		printf("The requested media is a binary file or archive, sending it\n");
 		getFilePath(&path, &uinput, &targetPath);
 		textFileTransaction(&response, &targetPath);
 		dotTerm = false;
