@@ -215,8 +215,17 @@ void textFileTransaction(struct String *response, struct String *filePath) {
     }
 }
 
-void *handle_client(void *arg) {
-    int client_fd = *((int *)arg);
+/* container for thread arguments */
+struct Args {
+    int *c;
+    struct Flags *f;
+};
+
+void *handle_client(void *ball) {
+    /* unpack arguments from void pointer */
+    struct Args *fargs = ball;
+    int client_fd = *((int *)fargs->c);
+    struct Flags flags = *((struct Flags *)fargs->f);
 
     char inputb[10000];
 
@@ -348,7 +357,7 @@ terminate_con:
     write(client_fd, response.s, response.len);
     shutdown(client_fd, SHUT_WR);
     close(client_fd);
-    free(arg);
+    free(ball);
 
     return NULL;
 }
@@ -498,10 +507,17 @@ int main(int argc, char *argv[]) {
 	    /* skip thread creation */
 	    continue;
 	}
+
+	/* prepare struct for passing to the thread */
+	struct Args ball = {0};
+	ball.c = client_fd;
+	ball.f = &flags;
+
+	void *ballp = &ball;
 	
 	/* create thread for the client request */
 	pthread_t thread_id;
-	pthread_create(&thread_id, NULL, handle_client, (void *)client_fd);
+	pthread_create(&thread_id, NULL, handle_client, (void *)ballp);
 	pthread_detach(thread_id);
 	//handle_client((void *) client_fd);
     }
