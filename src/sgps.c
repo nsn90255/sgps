@@ -319,6 +319,9 @@ void *handle_client(int *arg) {
 	    case '4' :
 	    case '5' :
 	    case '9' :
+	    case 'I' :
+	    case 'g' :
+	    case 'd' :
 		printf("The requested media is a binary file or archive, sending it\n");
 		getFilePath(&path, &uinput, &targetPath);
 		textFileTransaction(&response, &targetPath);
