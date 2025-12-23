@@ -215,7 +215,7 @@ void textFileTransaction(struct String *response, struct String *filePath) {
     }
 }
 
-void *handle_client(int *arg) {
+void *handle_client(void *arg) {
     int client_fd = *((int *)arg);
 
     char inputb[10000];
@@ -500,12 +500,10 @@ int main(int argc, char *argv[]) {
 	}
 	
 	/* create thread for the client request */
-	/*
 	pthread_t thread_id;
 	pthread_create(&thread_id, NULL, handle_client, (void *)client_fd);
 	pthread_detach(thread_id);
-	*/
-	handle_client((void *) client_fd);
+	//handle_client((void *) client_fd);
     }
     
     close(sock);

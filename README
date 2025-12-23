@@ -1,7 +1,8 @@
 --------------------------------------------------------------------------------
 SGPS
 --------------------------------------------------------------------------------
-A mostly RFC-1436 and RFC-4266 compliant work in progress gopher server.
+A mostly RFC-1436 and RFC-4266 compliant work in progress multithreated gopher 
+server.
 
 Missing features :
 - Type '2' CSO phone-book server requests
