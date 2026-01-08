@@ -75,7 +75,9 @@ void getDirCon(struct String *res, DIR *dir) {
 	} else if (dirS->d_type == DT_DIR) {
 	    create_gentry(res, "1", dirS->d_name);
 	}
+	#ifdef DEBUG
 	printf("The file name is %s\n", dirS->d_name);
+	#endif
     }
 }
 
@@ -102,7 +104,9 @@ void getFullDir(struct String *root, struct String *uinput, struct String *path)
 	}
 	str_pndc(path, '/');
     }
+    #ifdef DEBUG
     printf("The path is '%s'\n", path->s);
+    #endif
 }
 
 void fIntoStr(struct String *str, FILE *f) {
@@ -155,7 +159,9 @@ char parseGophermap(struct String *uinput, struct String *pgophermap) {
 	    c++;
 	}
 	// process line
+	#ifdef DEBUG
 	printf("parsed line: %s\n", line.s);
+	#endif
 	if (*c == '\r')
 	    c++;
 	if (*c == '\n')
@@ -163,10 +169,14 @@ char parseGophermap(struct String *uinput, struct String *pgophermap) {
 
 	if (matchLines(uinput, &line)) {
 	    ftype = line.s[0];
+	    #ifdef DEBUG
 	    printf("Found the entry in the gophermap\n");
 	    printf("The entry type is : %c\n", ftype);
+	    #endif
 	} else {
+	    #ifdef DEBUG
 	    printf("Entry not found in the gophermap\n");
+	    #endif
 	}
     }
     return ftype;
@@ -183,10 +193,14 @@ void menuTransaction(struct String *response, struct String *dgmap) {
     FILE *map = fopen(dgmap->s, "r");
     
     if (map != NULL) {
+	#ifdef DEBUG
 	printf("Opening %s for writting to the response\n", dgmap->s);
+	#endif
 	fIntoStr(response, map);
     } else {
+	#ifdef DEBUG
 	printf("File %s failed to open\n", dgmap->s);
+	#endif
 	str_pnd(response, "3Menu transaction failed\r\n");
     }
 }
@@ -195,7 +209,9 @@ void getFilePath(struct String *path, struct String *uinput, struct String *file
     
     str_pnd(filePath, path->s);
     str_pnd(filePath, uinput->s);
+    #ifdef DEBUG
     printf("The file path is %s\n", filePath->s);
+    #endif
 
 }
 
@@ -205,9 +221,13 @@ void textFileTransaction(struct String *response, struct String *filePath) {
 
     if (f != NULL) {
 	fIntoStr(response, f);
+	#ifdef DEBUG
 	printf("Writting the file %s to the response\n", filePath->s);
+	#endif
     } else {
+	#ifdef DEBUG
 	printf("The file %s could not be opened\n", filePath->s);
+	#endif
 	str_pnd(response, "3Error getting the file\r\n");
     }
 }
@@ -240,8 +260,9 @@ void *handle_client(void *ball) {
     struct String uinput = {0};
     str_pnd(&uinput, inputb);
     
-    // debugging
+    #ifdef DEBUG
     printf("the user sent:\n%s\n", uinput.s);
+    #endif
 
     /* root of the server */
     struct String root = {0};
@@ -264,7 +285,9 @@ void *handle_client(void *ball) {
     bool dotTerm = true;
 
     if (dir == NULL) {
+	#ifdef DEBUG
 	printf("The resquested media was on a directory that wasn't found\n");
+	#endif
 	str_pnd(&response, "3The resquested media was not found\r\n");
 	goto terminate_con;
     } 
@@ -283,7 +306,9 @@ void *handle_client(void *ball) {
 
     /* if no gophermap is found for the parent directory, create it at runtime */
     if (fgophermap == NULL) {
+	#ifdef DEBUG
 	printf("A gophermap wasn't found in the directory of the requested ressource\n");
+	#endif
 	/* create a gophermap for the directory of the requested media */
 	getDirCon(&pgophermap, dir);
     } else {
@@ -291,7 +316,9 @@ void *handle_client(void *ball) {
 	fIntoStr(&pgophermap, fgophermap);
     }
     /* at the end, there must be a gophermap in the pgophermap string */
+    #ifdef DEBUG
     printf("The gophermap for the requested media is\n%s\n", pgophermap.s);
+    #endif
 	
     /*
     * if the client sends carriage return followed by
@@ -299,7 +326,9 @@ void *handle_client(void *ball) {
     */
     
     if (uinput.len == 0) {
+	#ifdef DEBUG
 	printf("The client requested the root dir\n");
+	#endif
 	str_pnd(&response, pgophermap.s);
 	goto terminate_con;
     }
@@ -312,14 +341,18 @@ void *handle_client(void *ball) {
 	switch (ftype) {
 	    case '0' :
 	    case '6' :
+		#ifdef DEBUG
 		printf("The requested media is a plain, or uuencoded, starting TextFile Transaction");
+		#endif
 		getFilePath(&path, &uinput, &targetPath);
 		textFileTransaction(&response, &targetPath);
 		break;
 	    case '1' :
-		printf("The requested media is a directory, starting Menu Transaction\n");
 		getdgmapPath(&root, &uinput, &targetPath);
+		#ifdef DEBUG
+		printf("The requested media is a directory, starting Menu Transaction\n");
 		printf("The path to get is %s\n", targetPath.s);
+		#endif
 		menuTransaction(&response, &targetPath);
 		break;
 	    case '4' :
@@ -328,13 +361,17 @@ void *handle_client(void *ball) {
 	    case 'I' :
 	    case 'g' :
 	    case 'd' :
+		#ifdef DEBUG
 		printf("The requested media is a binary file or archive, sending it\n");
+		#endif
 		getFilePath(&path, &uinput, &targetPath);
 		textFileTransaction(&response, &targetPath);
 		dotTerm = false;
 		break;
 	    default :
+		#ifdef DEBUG
 		printf("The requested media wasn't supported\n");
+		#endif
 		str_pnd(&response, "3Error, the requested media wasn't supported\r\n");
 		break;
 	}
@@ -344,12 +381,16 @@ void *handle_client(void *ball) {
     }
 
 terminate_con:
-    //printf("Before the dot, the string constains %s\n", response.s);
+    #ifdef DEBUG
+    printf("Before the dot, the string constains %s\n", response.s);
+    #endif
     /* append terminator */
     if (dotTerm)
 	str_pnd(&response, ".\r\n");
 
+    #ifdef DEBUG
     printf("After the dot, the string constains %s\n", response.s);
+    #endif
 
     write(client_fd, response.s, response.len);
     shutdown(client_fd, SHUT_WR);

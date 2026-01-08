@@ -2,7 +2,7 @@
 CC = gcc
 CFLAGS = -Wall -pedantic
 LDFLAGS =
-DEBUGFLAGS = -O0 -g -Werror
+DEBUGFLAGS = -O0 -g -Werror -DDEBUG
 SRC = src/sgps.c
 BIN = sgps.o
 
