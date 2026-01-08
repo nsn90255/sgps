@@ -54,6 +54,7 @@ bool str_eq(char *s1, char *s2) {
     }
 }
 
+//TODO : pass flags to this function
 void create_gentry(struct String *res, char *type, char *str) {
     str_pnd(res, type);
     str_pnd(res, str);
