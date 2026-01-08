@@ -9,9 +9,8 @@
 #include<unistd.h>
 
 // TODO : Remove the first 3 macros
-#define WEBSITE_NAME "127.0.0.1"
 #define ROOT "/home/pepper/Projects/sgps/testing_server"
-#define MISSING_GOPHERMAP_WARNING ("iA gophermap entry could not be found for this directory and this entry was automatically generated\t\t" WEBSITE_NAME "\t7000\r\n")
+#define MISSING_GOPHERMAP_WARNING ("iA gophermap entry could not be found for this directory and this entry was automatically generated\t\t\t70\r\n")
 #define SMAXLENGTH 10000
 
 struct String {
@@ -64,8 +63,8 @@ void create_gentry(struct String *res, char *type, char *str) {
     str_pnd(res, "\t/");
     str_pnd(res, str);
     str_pnd(res, "\t");
-    str_pnd(res, WEBSITE_NAME);
-    str_pnd(res, "\t7000\r\n");
+    str_pnd(res, "");
+    str_pnd(res, "\t70\r\n");
 }
 
 void getDirCon(struct String *res, DIR *dir) {
@@ -249,7 +248,7 @@ void *handle_client(void *ball) {
 
     /* root of the server */
     struct String root = {0};
-    str_pnd(&root, ROOT);
+    str_pnd(&root, flags.root.s);
 
     /* 
     * full dir path of the requested object
