@@ -8,9 +8,6 @@
 #include<sys/types.h>
 #include<unistd.h>
 
-// TODO : Remove the first 3 macros
-#define ROOT "/home/pepper/Projects/sgps/testing_server"
-#define MISSING_GOPHERMAP_WARNING ("iA gophermap entry could not be found for this directory and this entry was automatically generated\t\t\t70\r\n")
 #define SMAXLENGTH 10000
 
 struct String {
@@ -68,7 +65,7 @@ void create_gentry(struct String *res, char *type, char *str) {
 }
 
 void getDirCon(struct String *res, DIR *dir) {
-    str_pnd(res, MISSING_GOPHERMAP_WARNING);
+    str_pnd(res, "iA gophermap entry could not be found for this directory and this entry was automatically generated\t\t\t70\r\n");
     struct dirent *dirS;
     while ( (dirS = readdir(dir)) != NULL) {
 	if (str_eq(dirS->d_name, "gophermap"))
