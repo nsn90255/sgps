@@ -8,10 +8,11 @@
 #include<sys/types.h>
 #include<unistd.h>
 
+// TODO : Remove the first 3 macros
 #define WEBSITE_NAME "127.0.0.1"
 #define ROOT "/home/pepper/Projects/sgps/testing_server"
-#define SMAXLENGTH 10000
 #define MISSING_GOPHERMAP_WARNING ("iA gophermap entry could not be found for this directory and this entry was automatically generated\t\t" WEBSITE_NAME "\t7000\r\n")
+#define SMAXLENGTH 10000
 
 struct String {
     char s[SMAXLENGTH];
