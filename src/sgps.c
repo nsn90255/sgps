@@ -63,8 +63,10 @@ void create_gentry(struct String *res, char *type, char *str) {
     str_pnd(res, "\t/");
     str_pnd(res, str);
     str_pnd(res, "\t");
-    str_pnd(res, "");
-    str_pnd(res, "\t70\r\n");
+    str_pnd(res, flags.domain.s);
+    str_pnd(res, "\t");
+    str_pnd(res, flags.port.s);
+    str_pnd(res, "\r\n");
 }
 
 void getDirCon(struct String *res, DIR *dir) {
