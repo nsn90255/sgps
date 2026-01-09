@@ -11,7 +11,6 @@
 
 #define SMAXLENGTH 10000
 
-
 struct String {
     char s[SMAXLENGTH];
     size_t len;
@@ -58,8 +57,6 @@ bool str_eq(char *s1, char *s2) {
     }
 }
 
-//TODO : pass flags to this function
-//or put on the heap idk
 void create_gentry(struct String *res, char *type, char *str) {
     str_pnd(res, type);
     str_pnd(res, str);
@@ -131,7 +128,6 @@ bool matchLines(struct String *uinput, struct String *line) {
 	t++; 
     while (*t && *t == '\t')
 	t++; 
-    
 
     struct String toMatch = {0};
     // copty to toMatch until the second \t
@@ -237,17 +233,7 @@ void textFileTransaction(struct String *response, struct String *filePath) {
     }
 }
 
-/* container for thread arguments */
-//struct Args {
-//    int *c;
-//    struct Flags *f;
-//};
-
 void *handle_client(void* arg) {
-    /* unpack arguments from void pointer */
-    //struct Args *fargs = ball;
-    //int client_fd = *((int *)fargs->c);
-    //struct Flags flags = *((struct Flags *)fargs->f);
     int client_fd = *((int*)arg);
 
     char inputb[10000];
@@ -401,7 +387,6 @@ terminate_con:
     write(client_fd, response.s, response.len);
     shutdown(client_fd, SHUT_WR);
     close(client_fd);
-    //free(ball);
 
     return NULL;
 }
@@ -550,19 +535,10 @@ int main(int argc, char *argv[]) {
 	    continue;
 	}
 
-	/* prepare struct for passing to the thread */
-//	struct Args ball = {0};
-//	ball.c = client_fd;
-//	ball.f = &flags;
-//
-//	void *ballp = &ball;
-	
 	/* create thread for the client request */
 	pthread_t thread_id;
-	//pthread_create(&thread_id, NULL, handle_client, (void *)ballp);
 	pthread_create(&thread_id, NULL, handle_client, (void *)client_fd);
 	pthread_detach(thread_id);
-	//handle_client((void *) client_fd);
     }
     
     close(sock);
