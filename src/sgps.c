@@ -11,6 +11,7 @@
 
 #define SMAXLENGTH 10000
 
+
 struct String {
     char s[SMAXLENGTH];
     size_t len;
@@ -24,6 +25,8 @@ struct Flags {
     bool p;
     struct String port;
 };
+
+static struct Flags flags = {0};
 
 void str_pnd(struct String *str, char *toAdd) {
     size_t i = 0;
@@ -235,16 +238,17 @@ void textFileTransaction(struct String *response, struct String *filePath) {
 }
 
 /* container for thread arguments */
-struct Args {
-    int *c;
-    struct Flags *f;
-};
+//struct Args {
+//    int *c;
+//    struct Flags *f;
+//};
 
-void *handle_client(void *ball) {
+void *handle_client(void* arg) {
     /* unpack arguments from void pointer */
-    struct Args *fargs = ball;
-    int client_fd = *((int *)fargs->c);
-    struct Flags flags = *((struct Flags *)fargs->f);
+    //struct Args *fargs = ball;
+    //int client_fd = *((int *)fargs->c);
+    //struct Flags flags = *((struct Flags *)fargs->f);
+    int client_fd = *((int*)arg);
 
     char inputb[10000];
 
@@ -397,7 +401,7 @@ terminate_con:
     write(client_fd, response.s, response.len);
     shutdown(client_fd, SHUT_WR);
     close(client_fd);
-    free(ball);
+    //free(ball);
 
     return NULL;
 }
@@ -414,7 +418,7 @@ void usage(void) {
     printf("Ex : sgps -r /srv -d example.com -p 7070\n");
 }
 
-bool checkFlags(struct Flags *flags, int argc, char *argv[]){
+bool checkFlags(int argc, char *argv[]){
     bool odd = false;
     // each flag need an argument
     if (argc % 2 != 0)
@@ -429,37 +433,35 @@ bool checkFlags(struct Flags *flags, int argc, char *argv[]){
 	// set options for flags
 	switch (argv[i][1]) {
 	    case 'r' :
-		flags->r = true;
-		str_pnd(&flags->root, argv[i + 1]);
+		flags.r = true;
+		str_pnd(&flags.root, argv[i + 1]);
 		break;
 	    case 'd' :
-		flags->d = true;
-		str_pnd(&flags->domain, argv[i + 1]);
+		flags.d = true;
+		str_pnd(&flags.domain, argv[i + 1]);
 		break;
 	    case 'p' :
-		flags->p = true;
-		str_pnd(&flags->port, argv[i + 1]);
+		flags.p = true;
+		str_pnd(&flags.port, argv[i + 1]);
 		break;
 	    default :
 		return false;
 	}
     }
     // the root is mandatory
-    if (!flags->r)
+    if (!flags.r)
 	printf("You must specify a root for the server to serve from.\n");
     // the domain is mandatory
-    if (!flags->d)
+    if (!flags.d)
 	printf("You must specify a domain for the server.\n");
 
-    return odd && flags->r && flags->d;
+    return odd && flags.r && flags.d;
 }
 
 int main(int argc, char *argv[]) {
     
-    static struct Flags flags = {0};
-
     /* exit imediately if the flags are flagrantly wrong */
-    if (!checkFlags(&flags, argc, argv)) {
+    if (!checkFlags(argc, argv)) {
 	usage();
 	exit(1);
     }
@@ -549,15 +551,16 @@ int main(int argc, char *argv[]) {
 	}
 
 	/* prepare struct for passing to the thread */
-	struct Args ball = {0};
-	ball.c = client_fd;
-	ball.f = &flags;
-
-	void *ballp = &ball;
+//	struct Args ball = {0};
+//	ball.c = client_fd;
+//	ball.f = &flags;
+//
+//	void *ballp = &ball;
 	
 	/* create thread for the client request */
 	pthread_t thread_id;
-	pthread_create(&thread_id, NULL, handle_client, (void *)ballp);
+	//pthread_create(&thread_id, NULL, handle_client, (void *)ballp);
+	pthread_create(&thread_id, NULL, handle_client, (void *)client_fd);
 	pthread_detach(thread_id);
 	//handle_client((void *) client_fd);
     }
