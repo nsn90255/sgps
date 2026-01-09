@@ -1,8 +1,8 @@
-.PHONY: all clean debug
+.PHONY: all
 CC = gcc
 CFLAGS = -Wall -pedantic
 LDFLAGS =
-DEBUGFLAGS = -O0 -g -Werror -DDEBUG
+DEBUGFLAGS = -O0 -g -Werror -DDEBUG -fsanitize=address
 SRC = src/sgps.c
 BIN = sgps.o
 
