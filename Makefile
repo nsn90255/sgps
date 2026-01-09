@@ -1,6 +1,6 @@
 .PHONY: all
 CC = gcc
-CFLAGS = -Wall -pedantic
+CFLAGS = -Wall -pedantic -std=c23
 LDFLAGS =
 DEBUGFLAGS = -O0 -g -Werror -DDEBUG -fsanitize=address
 SRC = src/sgps.c

@@ -1,3 +1,4 @@
+#define _DEFAULT_SOURCE
 #include<dirent.h>
 #include<netinet/in.h>
 #include<pthread.h>
@@ -55,6 +56,7 @@ bool str_eq(char *s1, char *s2) {
 }
 
 //TODO : pass flags to this function
+//or put on the heap idk
 void create_gentry(struct String *res, char *type, char *str) {
     str_pnd(res, type);
     str_pnd(res, str);
@@ -144,7 +146,6 @@ char parseGophermap(struct String *uinput, struct String *pgophermap) {
     // PGOPHERMAP : 	"1Some Dir\tSomeDir\texample.com\t70\r\n
     // 			 0Some File\tSubDir/someFile.txt\example.com\t70r\n
     // FTYPE : "0" <- gets assigned the type identifier
-    /* suported types */
 
     char *c = pgophermap->s;
 
@@ -455,7 +456,7 @@ bool checkFlags(struct Flags *flags, int argc, char *argv[]){
 
 int main(int argc, char *argv[]) {
     
-    struct Flags flags = {0};
+    static struct Flags flags = {0};
 
     /* exit imediately if the flags are flagrantly wrong */
     if (!checkFlags(&flags, argc, argv)) {
