@@ -458,7 +458,7 @@ int main(int argc, char *argv[]) {
     
     /* default port as per the spec */
     int port = 70;
-    
+
     /* if the port is defined, check that it is correct */
     if (flags.p) {
 	/* if it's not, exit */
