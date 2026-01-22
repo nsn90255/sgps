@@ -7,6 +7,7 @@ Missing features :
 - Type '7' index-search server requests
 - Type '8' telnet session requests
 - Type 'T' tn-3270 session requests
+
 I am not planning on implementing these due to their [lack of popularity](https://sunriseprogrammer.blogspot.com/2019/03/directory-entry-says-what-current.html).
 
 Extra features :
