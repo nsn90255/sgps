@@ -1,6 +1,4 @@
---------------------------------------------------------------------------------
-SGPS
---------------------------------------------------------------------------------
+# SGPS
 A mostly RFC-1436 and RFC-4266 compliant work in progress multithreated gopher 
 server.
 
@@ -15,5 +13,5 @@ Extra features :
 - Support for gophermaps
 - Support for widely used types in the gohper community ('d' and 'i')
 
-This has only been tested on x86_64 GNU/Linux using the gopherus client.
---------------------------------------------------------------------------------
+> [!NOTE]
+> This has only been tested on x86_64 GNU/Linux using the gopherus client.
