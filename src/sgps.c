@@ -115,7 +115,7 @@ void getFullDir(struct String *root, struct String *uinput, struct String *path)
 }
 
 void fIntoStr(struct String *str, FILE *f) {
-    char c;
+    int c;
     while ((c = getc(f)) != EOF) {
 	str_pndc(str, c);
     }
