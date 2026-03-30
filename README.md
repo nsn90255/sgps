@@ -1,5 +1,5 @@
 # SGPS
-A mostly RFC-1436 and RFC-4266 compliant work in progress multithreated gopher 
+A mostly RFC-1436 and RFC-4266 compliant multithreated gopher 
 server.
 
 Missing features :
